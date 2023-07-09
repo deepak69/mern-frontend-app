@@ -50,7 +50,6 @@ const UsersPage = () => {
     };
 
     fetchUsers();
-    console.log(users);
   }, []);
 
   const handleCardClick = (userId, noOfPlaces) => {
@@ -71,7 +70,7 @@ const UsersPage = () => {
   return (
     <Container maxWidth="md">
       <Typography variant="h4" align="center" gutterBottom padding="2%">
-        User's Places
+        Users' Favorite Places
       </Typography>
       {isLoading ? (
         <Typography variant="body1" align="center">

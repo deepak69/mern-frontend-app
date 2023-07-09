@@ -48,8 +48,8 @@ const SignupPage = () => {
       const response = await signup(name, email, password);
       if (response.user) {
         // Handle successful signup
-        navigate("/");
-        handleLoginSuccess();
+        alert("User Regestration sucessfull. Please login now");
+        navigate("/login");
       } else if (response.error) {
         setError(response.error); // Display specific error message from the server
       } else {

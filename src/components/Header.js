@@ -13,12 +13,13 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { LoginContext } from "../context/loginContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { isLoggedIn, handleLogout } = useContext(LoginContext);
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,8 +31,13 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Places
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1 }}
+          onClick={() => navigate("/allUsers")}
+        >
+          ExplorePoint
         </Typography>
         {isMobile ? (
           <>
