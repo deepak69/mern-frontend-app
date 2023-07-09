@@ -95,7 +95,7 @@ const MyPlaces = () => {
                       <CardContent>
                         <Typography variant="h6">{place.title}</Typography>
                         <Typography variant="body1">
-                          Description: {place.description}
+                          Address: {place.address}
                         </Typography>
                       </CardContent>
                       {isLoggedIn &&

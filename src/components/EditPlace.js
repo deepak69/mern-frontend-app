@@ -7,6 +7,7 @@ const EditPlace = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +16,7 @@ const EditPlace = () => {
         const { place } = await getPlaceById(id);
         setTitle(place.title);
         setDescription(place.description);
+        setAddress(place.address);
       } catch (error) {
         console.error("Failed to fetch place details", error);
       }
@@ -27,7 +29,7 @@ const EditPlace = () => {
     e.preventDefault();
 
     try {
-      await updatePlace(id, { title, description });
+      await updatePlace(id, { title, description, address });
       navigate("/myPlaces");
       // Handle successful place update
     } catch (error) {
@@ -58,6 +60,17 @@ const EditPlace = () => {
           rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
+          sx={{ marginBottom: "16px" }}
+        />
+
+        <TextField
+          label="Address"
+          fullWidth
+          multiline
+          rows={2}
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
           required
           sx={{ marginBottom: "16px" }}
         />

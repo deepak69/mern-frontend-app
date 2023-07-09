@@ -90,11 +90,12 @@ export const getPlaceById = async (placeId) => {
   }
 };
 
-export const addPlace = async (title, description, creator) => {
+export const addPlace = async (title, description, creator, address) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/places`, {
       title,
       description,
+      address,
       creator,
     });
     return response.data;

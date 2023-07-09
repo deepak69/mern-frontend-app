@@ -31,11 +31,11 @@ const UsersPage = () => {
         const response = await getUsers();
 
         if (response.users) {
-          const filterUsers = response.users.filter(
-            (user) => user.id !== localStorage.getItem("userId")
-          );
+          // const filterUsers = response.users.filter(
+          //   (user) => user.id !== localStorage.getItem("userId")
+          // );
 
-          setUsers(filterUsers);
+          setUsers(response.users);
         } else if (response.error) {
           setError(response.error);
         } else {
@@ -50,6 +50,7 @@ const UsersPage = () => {
     };
 
     fetchUsers();
+    console.log(users);
   }, []);
 
   const handleCardClick = (userId, noOfPlaces) => {
@@ -89,21 +90,31 @@ const UsersPage = () => {
             </Typography>
           ) : (
             <Grid container spacing={2}>
-              {users.map((user) => (
-                <Grid item xs={12} sm={6} md={4} key={user.id}>
-                  <Card
-                    onClick={() => handleCardClick(user.id, user.places.length)}
-                  >
-                    <CardContent>
-                      <Avatar>{user.name.charAt(0)}</Avatar>
-                      <Typography variant="h6">{user.name}</Typography>
-                      <Typography variant="body1">
-                        Number of Places: {user.places.length}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
+              {users &&
+                users.length > 0 &&
+                users.map((user) => (
+                  <Grid item xs={12} sm={6} md={4} key={user.id}>
+                    <Card
+                      onClick={() =>
+                        handleCardClick(user.id, user.places.length)
+                      }
+                    >
+                      <CardContent>
+                        <Avatar>{user.name.charAt(0)}</Avatar>
+                        <Typography variant="h6">{user.name}</Typography>
+                        <Typography variant="body1">
+                          Number of Places: {user.places.length}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              {users && users.length === 0 && (
+                <h1 padding="10%">
+                  Currently on site we dont have any user's and their places.
+                  Please start one by Signing up
+                </h1>
+              )}
             </Grid>
           )}
         </>
