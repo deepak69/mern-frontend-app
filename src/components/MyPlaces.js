@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { deletePlace, getPlacesByUser } from "../services/api";
 import { LoginContext } from "../context/loginContext";
+import MapIcon from "@mui/icons-material/Map";
 
 const MyPlaces = () => {
   const [places, setPlaces] = useState([]);
@@ -65,6 +66,10 @@ const MyPlaces = () => {
     navigate(`/editPlace/${id}`);
   };
 
+  const viewLocationOnMaps = (address) => {
+    window.open(`https://maps.google.com/maps?q=${address}`, "_blank");
+  };
+
   return (
     <Container maxWidth="md">
       <Typography variant="h4" align="center" gutterBottom padding="2%">
@@ -90,12 +95,12 @@ const MyPlaces = () => {
               {places &&
                 places.length > 0 &&
                 places.map((place) => (
-                  <Grid item xs={12} sm={6} md={4} key={place.id}>
+                  <Grid item xs={12} sm={6} md={6} key={place.id}>
                     <Card>
                       <CardContent>
                         <Typography variant="h6">{place.title}</Typography>
                         <Typography variant="body1">
-                          Address: {place.address}
+                          Address: {place.description}
                         </Typography>
                       </CardContent>
                       {isLoggedIn &&
@@ -116,6 +121,13 @@ const MyPlaces = () => {
                               onClick={() => handleDeletePlace(place.id)}
                             >
                               Delete
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              startIcon={<MapIcon />}
+                              onClick={() => viewLocationOnMaps(place.address)}
+                            >
+                              View in Map
                             </Button>
                           </CardActions>
                         )}
