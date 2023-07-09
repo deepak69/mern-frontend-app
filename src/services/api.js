@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const BASE_URL = "http://localhost:5000"; // Replace with your API URL
 
 export const login = async (email, password) => {
@@ -73,7 +75,7 @@ export const getPlacesByUser = async (userId) => {
 
 export const getPlaceById = async (placeId) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/places/user/${placeId}`, {
+    const response = await fetch(`${BASE_URL}/api/places/${placeId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -87,3 +89,44 @@ export const getPlaceById = async (placeId) => {
     throw error;
   }
 };
+
+export const addPlace = async (title, description, creator) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/places`, {
+      title,
+      description,
+      creator,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to add place", error);
+    throw error;
+  }
+};
+
+export const updatePlace = async (placeId, updatedPlace) => {
+  try {
+    const response = await axios.patch(
+      `${BASE_URL}/api/places/${placeId}`,
+      updatedPlace
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Failed to update place", error);
+    throw error;
+  }
+};
+
+export const deletePlace = async (placeId) => {
+  try {
+    const response = await axios.delete(`${BASE_URL}/api/places/${placeId}`);
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Failed to delete place", error);
+    throw error;
+  }
+};
+
+export const getPlaceByPlaceId = async (placeId) => {};

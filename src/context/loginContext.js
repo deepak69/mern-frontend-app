@@ -23,6 +23,7 @@ const LoginProvider = ({ children }) => {
   const handleLogout = () => {
     localStorage.clear();
     setIsLoggedIn(false);
+    window.location.href = "/login";
   };
 
   const value = {

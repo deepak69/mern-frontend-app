@@ -48,7 +48,6 @@ const SignupPage = () => {
       const response = await signup(name, email, password);
       if (response.user) {
         // Handle successful signup
-        console.log(response.user);
         navigate("/");
         handleLoginSuccess();
       } else if (response.error) {

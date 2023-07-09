@@ -55,8 +55,8 @@ const LoginPage = () => {
             (user) => user.email === email
           );
           currentUser = filteredUsers.length > 0 ? filteredUsers[0] : null;
-          console.log(currentUser.id);
           localStorage.setItem("userId", currentUser.id);
+          localStorage.setItem("myPlaces", currentUser?.places.length);
         } catch (error) {}
 
         localStorage.setItem("token", token);

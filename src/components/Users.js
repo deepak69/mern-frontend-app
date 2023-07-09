@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { getUsers } from "../services/api";
 import { LoginContext } from "../context/loginContext";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UsersPage = () => {
   const navigate = useNavigate();
@@ -31,7 +31,11 @@ const UsersPage = () => {
         const response = await getUsers();
 
         if (response.users) {
-          setUsers(response.users);
+          const filterUsers = response.users.filter(
+            (user) => user.id !== localStorage.getItem("userId")
+          );
+
+          setUsers(filterUsers);
         } else if (response.error) {
           setError(response.error);
         } else {
@@ -48,11 +52,11 @@ const UsersPage = () => {
     fetchUsers();
   }, []);
 
-  const handleCardClick = (userId) => {
+  const handleCardClick = (userId, noOfPlaces) => {
     if (isLoggedIn) {
-      alert("hi");
-
-      navigate(`/myPlaces/${userId}`);
+      if (noOfPlaces > 0) {
+        navigate(`/myPlaces/${userId}`);
+      }
     } else {
       // Show the login modal
       setShowModal(true);
@@ -87,7 +91,9 @@ const UsersPage = () => {
             <Grid container spacing={2}>
               {users.map((user) => (
                 <Grid item xs={12} sm={6} md={4} key={user.id}>
-                  <Card onClick={() => handleCardClick(user.id)}>
+                  <Card
+                    onClick={() => handleCardClick(user.id, user.places.length)}
+                  >
                     <CardContent>
                       <Avatar>{user.name.charAt(0)}</Avatar>
                       <Typography variant="h6">{user.name}</Typography>

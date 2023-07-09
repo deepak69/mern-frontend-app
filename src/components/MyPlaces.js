@@ -1,21 +1,36 @@
-import React, { useState, useEffect, createContext } from "react";
-import { useParams } from "react-router-dom";
-import { Container, Typography, Card, CardContent, Grid } from "@mui/material";
-import { getPlacesByUser } from "../services/api";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  CardActions,
+  Button,
+} from "@mui/material";
+import { deletePlace, getPlacesByUser } from "../services/api";
 import { LoginContext } from "../context/loginContext";
 
 const MyPlaces = () => {
   const [places, setPlaces] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const param = useParams();
+  const { isLoggedIn } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPlaces = async () => {
       setIsLoading(true);
       setError("");
-      const userId = localStorage.getItem("userId");
+      let userId;
 
-      console.log(userId);
+      if (param.id) {
+        userId = param.id;
+      } else {
+        userId = localStorage.getItem("userId");
+      }
 
       try {
         const response = await getPlacesByUser(userId);
@@ -34,9 +49,21 @@ const MyPlaces = () => {
 
       setIsLoading(false);
     };
-
     fetchPlaces();
-  }, []);
+  }, [param.id]);
+
+  const handleDeletePlace = (id) => {
+    try {
+      deletePlace(id);
+    } catch (error) {
+      setError("unable to delete place");
+      console.error("Failed to delete places", error);
+    }
+  };
+
+  const editThisPlace = (id) => {
+    navigate(`/editPlace/${id}`);
+  };
 
   return (
     <Container maxWidth="md">
@@ -60,18 +87,51 @@ const MyPlaces = () => {
             </Typography>
           ) : (
             <Grid container spacing={2}>
-              {places.map((place) => (
-                <Grid item xs={12} sm={6} md={4} key={place.id}>
+              {places &&
+                places.length > 0 &&
+                places.map((place) => (
+                  <Grid item xs={12} sm={6} md={4} key={place.id}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6">{place.title}</Typography>
+                        <Typography variant="body1">
+                          Description: {place.description}
+                        </Typography>
+                      </CardContent>
+                      {isLoggedIn &&
+                        place.creator === localStorage.getItem("userId") && (
+                          <CardActions>
+                            <Button
+                              type="submit"
+                              variant="contained"
+                              color="primary"
+                              onClick={() => editThisPlace(place.id)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="submit"
+                              variant="contained"
+                              color="error"
+                              onClick={() => handleDeletePlace(place.id)}
+                            >
+                              Delete
+                            </Button>
+                          </CardActions>
+                        )}
+                    </Card>
+                  </Grid>
+                ))}
+              {places && places.length === 0 && (
+                <Grid padding="10%">
                   <Card>
                     <CardContent>
-                      <Typography variant="h6">{place.title}</Typography>
-                      <Typography variant="body1">
-                        Description: {place.description}
-                      </Typography>
+                      You have zero places with this user Id. please click on
+                      the add place in the menu and start adding places
                     </CardContent>
                   </Card>
                 </Grid>
-              ))}
+              )}
             </Grid>
           )}
         </>
