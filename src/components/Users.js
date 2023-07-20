@@ -31,10 +31,6 @@ const UsersPage = () => {
         const response = await getUsers();
 
         if (response.users) {
-          // const filterUsers = response.users.filter(
-          //   (user) => user.id !== localStorage.getItem("userId")
-          // );
-
           setUsers(response.users);
         } else if (response.error) {
           setError(response.error);
@@ -68,8 +64,8 @@ const UsersPage = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Typography variant="h4" align="center" gutterBottom padding="2%">
+    <Container maxWidth="md" style={{ paddingTop: "2%" }}>
+      <Typography variant="h4" align="center" gutterBottom>
         Users' Favorite Places
       </Typography>
       {isLoading ? (
@@ -97,11 +93,30 @@ const UsersPage = () => {
                       onClick={() =>
                         handleCardClick(user.id, user.places.length)
                       }
+                      style={{
+                        cursor: "pointer",
+                        height: "100%",
+                        backgroundColor: "#f7f7f7",
+                        borderRadius: "10px",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                      }}
                     >
                       <CardContent>
-                        <Avatar>{user.name.charAt(0)}</Avatar>
-                        <Typography variant="h6">{user.name}</Typography>
-                        <Typography variant="body1">
+                        <Avatar
+                          style={{
+                            backgroundColor: "#3f51b5",
+                            marginBottom: "16px",
+                          }}
+                        >
+                          {user.name.charAt(0)}
+                        </Avatar>
+                        <Typography variant="h6" style={{ marginTop: "8px" }}>
+                          {user.name}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          style={{ marginTop: "8px" }}
+                        >
                           Number of Places: {user.places.length}
                         </Typography>
                       </CardContent>
@@ -109,10 +124,16 @@ const UsersPage = () => {
                   </Grid>
                 ))}
               {users && users.length === 0 && (
-                <h1 padding="10%">
-                  Currently on site we dont have any user's and their places.
-                  Please start one by Signing up
-                </h1>
+                <Grid item xs={12}>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    style={{ padding: "10%" }}
+                  >
+                    Currently, we don't have any users and their places on the
+                    site. Please start by signing up.
+                  </Typography>
+                </Grid>
               )}
             </Grid>
           )}

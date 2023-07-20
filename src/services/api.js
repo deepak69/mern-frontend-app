@@ -2,6 +2,8 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:5000"; // Replace with your API URL
 
+let token = localStorage.getItem("token");
+
 export const login = async (email, password) => {
   try {
     const response = await fetch(`${BASE_URL}/api/users/login`, {
@@ -92,13 +94,22 @@ export const getPlaceById = async (placeId) => {
 
 export const addPlace = async (title, description, creator, address) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/places`, {
-      title,
-      description,
-      address,
-      creator,
+    const response = await fetch(`${BASE_URL}/api/places`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, description, address, creator }),
     });
-    return response.data;
+
+    if (!response.ok) {
+      // Handle non-2xx response status
+      throw new Error("Failed to add place");
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Failed to add place", error);
     throw error;
@@ -107,11 +118,21 @@ export const addPlace = async (title, description, creator, address) => {
 
 export const updatePlace = async (placeId, updatedPlace) => {
   try {
-    const response = await axios.patch(
-      `${BASE_URL}/api/places/${placeId}`,
-      updatedPlace
-    );
-    const data = response.data;
+    const response = await fetch(`${BASE_URL}/api/places/${placeId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedPlace),
+    });
+
+    if (!response.ok) {
+      // Handle non-2xx response status
+      throw new Error("Failed to update place");
+    }
+
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Failed to update place", error);
@@ -121,7 +142,12 @@ export const updatePlace = async (placeId, updatedPlace) => {
 
 export const deletePlace = async (placeId) => {
   try {
-    const response = await axios.delete(`${BASE_URL}/api/places/${placeId}`);
+    const response = await axios.delete(`${BASE_URL}/api/places/${placeId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = response.data;
     return data;
   } catch (error) {

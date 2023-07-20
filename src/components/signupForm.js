@@ -46,7 +46,7 @@ const SignupPage = () => {
 
     try {
       const response = await signup(name, email, password);
-      if (response.user) {
+      if (response.userId) {
         // Handle successful signup
         alert("User Regestration sucessfull. Please login now");
         navigate("/login");

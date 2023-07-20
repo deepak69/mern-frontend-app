@@ -30,8 +30,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setEmail("");
-    setPassword("");
+
     // Form validation
     if (!email || !password) {
       setError("Please fill in all required fields");
@@ -42,9 +41,10 @@ const LoginPage = () => {
     setError(""); // Clear any previous error
 
     try {
+      console.log("I m in tr");
       const response = await login(email, password);
-
-      if (response.message === "Logged in") {
+      console.log(response, "res");
+      if (response.userId) {
         const { token, email } = response;
         let userResults;
         let filteredUsers;
@@ -55,7 +55,9 @@ const LoginPage = () => {
             (user) => user.email === email
           );
           currentUser = filteredUsers.length > 0 ? filteredUsers[0] : null;
+          console.log(currentUser, "cur");
           localStorage.setItem("userId", currentUser.id);
+          localStorage.setItem("token", token);
           localStorage.setItem("myPlaces", currentUser?.places.length);
         } catch (error) {}
 

@@ -56,6 +56,7 @@ const MyPlaces = () => {
   const handleDeletePlace = (id) => {
     try {
       deletePlace(id);
+      window.location.reload();
     } catch (error) {
       setError("unable to delete place");
       console.error("Failed to delete places", error);
