@@ -12,28 +12,12 @@ const AddPlace = () => {
     formState: { errors },
   } = useForm();
 
-  // Function to convert image file to base64
-  const convertImageToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result); // The base64 string will be available here
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
   const onSubmit = async (data) => {
     try {
-      const { title, description, address } = data;
       const creator = localStorage.getItem("userId");
 
-      // Convert the image to base64
-      // const base64Image = await convertImageToBase64(image[0]);
-
-      // Send the form data to the backend, including the base64 image
-      await addPlace(title, description, creator, address);
+      // Send the form data to the backend, including the image file
+      await addPlace(data, creator);
       navigate("/myPlaces");
 
       // Handle successful place addition
@@ -106,6 +90,14 @@ const AddPlace = () => {
             />
           )}
         />
+
+        <input
+          type="file"
+          accept="image/*"
+          name="image"
+          {...control.register("image", { required: "Image is required." })}
+        />
+        {errors.image && <span>{errors.image.message}</span>}
 
         <Button type="submit" variant="contained" color="primary">
           Add Place

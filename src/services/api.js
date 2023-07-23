@@ -63,7 +63,7 @@ export const getPlacesByUser = async (userId) => {
     const response = await fetch(`${BASE_URL}/api/places/user/${userId}`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -92,21 +92,15 @@ export const getPlaceById = async (placeId) => {
   }
 };
 
-export const addPlace = async (title, description, creator, address, image) => {
+export const addPlace = async (formData, creator) => {
   try {
     const token = localStorage.getItem("token"); // Assuming you have stored the token in localStorage
     const response = await axios.post(
       `${BASE_URL}/api/places`,
-      {
-        title,
-        description,
-        address,
-        creator,
-        image,
-      },
+      { ...formData, creator },
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       }
@@ -121,22 +115,19 @@ export const addPlace = async (title, description, creator, address, image) => {
 
 export const updatePlace = async (placeId, updatedPlace) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/places/${placeId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedPlace),
-    });
+    const token = localStorage.getItem("token"); // Assuming you have stored the token in localStorage
+    const response = await axios.patch(
+      `${BASE_URL}/api/places/${placeId}`,
+      updatedPlace,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      // Handle non-2xx response status
-      throw new Error("Failed to update place");
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Failed to update place", error);
     throw error;

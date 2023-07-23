@@ -104,6 +104,13 @@ const EditPlace = () => {
             />
           )}
         />
+        <input
+          type="file"
+          accept="image/*"
+          name="image"
+          {...control.register("image", { required: "Image is required." })}
+        />
+        {errors.image && <span>{errors.image.message}</span>}
         <Button type="submit" variant="contained" color="primary">
           Update Place
         </Button>

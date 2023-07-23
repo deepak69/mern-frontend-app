@@ -99,6 +99,12 @@ const MyPlaces = () => {
                   <Grid item xs={12} sm={6} md={6} key={place.id}>
                     <Card>
                       <CardContent>
+                        <Typography variant="h6">
+                          <img
+                            src={`http://localhost:5000/${place?.image}`}
+                            alt="place"
+                          />
+                        </Typography>
                         <Typography variant="h6">{place.title}</Typography>
                         <Typography variant="body1">
                           Address: {place.description}
