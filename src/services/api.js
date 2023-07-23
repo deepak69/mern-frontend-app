@@ -92,24 +92,27 @@ export const getPlaceById = async (placeId) => {
   }
 };
 
-export const addPlace = async (title, description, creator, address) => {
+export const addPlace = async (title, description, creator, address, image) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/places`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+    const token = localStorage.getItem("token"); // Assuming you have stored the token in localStorage
+    const response = await axios.post(
+      `${BASE_URL}/api/places`,
+      {
+        title,
+        description,
+        address,
+        creator,
+        image,
       },
-      body: JSON.stringify({ title, description, address, creator }),
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      // Handle non-2xx response status
-      throw new Error("Failed to add place");
-    }
-
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Failed to add place", error);
     throw error;

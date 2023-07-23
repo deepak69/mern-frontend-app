@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   Container,
   Typography,
@@ -12,50 +12,41 @@ import {
 import { getUsers, login } from "../services/api";
 import { LoginContext } from "../context/loginContext";
 import { useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = useForm();
   const { handleLoginSuccess } = useContext(LoginContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Clear the form fields when the component mounts or when isLoading changes
-    setEmail("");
-    setPassword("");
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Form validation
-    if (!email || !password) {
-      setError("Please fill in all required fields");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(""); // Clear any previous error
+  const onSubmit = async (data) => {
+    const { email, password } = data;
 
     try {
-      console.log("I m in tr");
+      setIsLoading(true);
+      setError("form", { type: "submit", message: "" }); // Clear any previous form error
+
       const response = await login(email, password);
-      console.log(response, "res");
+
       if (response.userId) {
         const { token, email } = response;
         let userResults;
         let filteredUsers;
         let currentUser;
+
         try {
           userResults = await getUsers();
           filteredUsers = userResults.users.filter(
             (user) => user.email === email
           );
           currentUser = filteredUsers.length > 0 ? filteredUsers[0] : null;
-          console.log(currentUser, "cur");
+
           localStorage.setItem("userId", currentUser.id);
           localStorage.setItem("token", token);
           localStorage.setItem("myPlaces", currentUser?.places.length);
@@ -66,10 +57,13 @@ const LoginPage = () => {
         navigate("/allUsers");
         handleLoginSuccess(currentUser.id);
       } else {
-        setError(response.message);
+        setError("form", { type: "submit", message: response.message });
       }
     } catch (error) {
-      setError("An error occurred. Please try again later.");
+      setError("form", {
+        type: "submit",
+        message: "An error occurred. Please try again later.",
+      });
       console.error("Login failed", error);
     }
 
@@ -89,39 +83,44 @@ const LoginPage = () => {
         <Typography variant="h4" align="center" gutterBottom>
           Login
         </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            width: "100%", // Set form width to 100% of the container
-            mt: 2, // Add some spacing at the top
-          }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                type="email"
-                label="Email"
-                fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="outlined"
-                required
+              <Controller
+                name="email"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="email"
+                    label="Email"
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                type="password"
-                label="Password"
-                fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                variant="outlined"
-                required
+              <Controller
+                name="password"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="password"
+                    label="Password"
+                    fullWidth
+                    variant="outlined"
+                    required
+                  />
+                )}
               />
             </Grid>
           </Grid>
-          {error && <p>{error}</p>}
+          {errors.form && <p>{errors.form.message}</p>}
           <Button
             type="submit"
             variant="contained"
@@ -142,7 +141,7 @@ const LoginPage = () => {
               Sign up
             </Link>
           </Typography>
-        </Box>
+        </form>
       </Box>
     </Container>
   );
