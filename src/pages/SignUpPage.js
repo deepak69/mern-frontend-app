@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { signup } from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { LoginContext } from "../context/loginContext";
+
 import { useForm, Controller } from "react-hook-form";
 
 const SignupPage = () => {
