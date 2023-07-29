@@ -19,6 +19,7 @@ const LoginPage = () => {
     handleSubmit,
     control,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm();
   const { handleLoginSuccess } = useContext(LoginContext);
@@ -102,6 +103,9 @@ const LoginPage = () => {
                     fullWidth
                     variant="outlined"
                     required
+                    onFocus={() => {
+                      clearErrors(); // Reset all errors for all fields in the form
+                    }}
                   />
                 )}
               />
@@ -118,6 +122,9 @@ const LoginPage = () => {
                     label="Password"
                     fullWidth
                     variant="outlined"
+                    onFocus={() => {
+                      clearErrors(); // Reset all errors for all fields in the form
+                    }}
                     required
                   />
                 )}

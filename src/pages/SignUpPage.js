@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Container,
   Typography,
@@ -12,52 +12,42 @@ import {
 import { signup } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../context/loginContext";
+import { useForm, Controller } from "react-hook-form";
 
 const SignupPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    handleSubmit,
+    control,
+    clearErrors,
+    setError,
+    formState: { errors },
+  } = useForm();
+
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Clear the form fields when the component mounts or when isLoading changes
-    setName("");
-    setEmail("");
-    setPassword("");
-  }, [isLoading]);
-
-  const { handleLoginSuccess } = useContext(LoginContext);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setName("");
-    setEmail("");
-    setPassword("");
-    // Form validation
-    if (!name || !email || !password) {
-      setError("Please fill in all required fields");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(""); // Clear any previous error
+  const onSubmit = async (data) => {
+    const { name, email, password } = data;
 
     try {
+      setIsLoading(true);
+      setError("form", { type: "submit", message: "" }); // Clear any previous form error
+
       const response = await signup(name, email, password);
+
       if (response.userId) {
         // Handle successful signup
-        alert("User Regestration sucessfull. Please login now");
+        alert("User Registration successful. Please login now");
         navigate("/login");
-      } else if (response.error) {
-        setError(response.error); // Display specific error message from the server
       } else {
-        setError(response.message);
+        setError("form", { type: "submit", message: response.message });
       }
     } catch (error) {
-      setError("An error occurred. Please try again later.");
-      console.error(error);
+      setError("form", {
+        type: "submit",
+        message: "An error occurred. Please try again later.",
+      });
+      console.error("Signup failed", error);
     }
 
     setIsLoading(false);
@@ -76,50 +66,70 @@ const SignupPage = () => {
         <Typography variant="h4" align="center" gutterBottom>
           Signup
         </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            width: "100%", // Set form width to 100% of the container
-            mt: 2, // Add some spacing at the top
-          }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                type="text"
-                label="Name"
-                fullWidth
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                variant="outlined"
-                required
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="text"
+                    label="Name"
+                    fullWidth
+                    variant="outlined"
+                    onFocus={() => {
+                      clearErrors(); // Reset all errors for all fields in the form
+                    }}
+                    required
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                type="email"
-                label="Email"
-                fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                variant="outlined"
-                required
+              <Controller
+                name="email"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="email"
+                    label="Email"
+                    fullWidth
+                    variant="outlined"
+                    onFocus={() => {
+                      clearErrors(); // Reset all errors for all fields in the form
+                    }}
+                    required
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                type="password"
-                label="Password"
-                fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                variant="outlined"
-                required
+              <Controller
+                name="password"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="password"
+                    label="Password"
+                    fullWidth
+                    variant="outlined"
+                    onFocus={() => {
+                      clearErrors(); // Reset all errors for all fields in the form
+                    }}
+                    required
+                  />
+                )}
               />
             </Grid>
           </Grid>
-          {error && <p>{error}</p>}
+          {errors.form && <p>{errors.form.message}</p>}
           <Button
             type="submit"
             variant="contained"
@@ -140,7 +150,7 @@ const SignupPage = () => {
               Login
             </Link>
           </Typography>
-        </Box>
+        </form>
       </Box>
     </Container>
   );
