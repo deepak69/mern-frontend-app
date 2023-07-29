@@ -42,6 +42,11 @@ const LoginPage = () => {
 
         try {
           userResults = await getUsers();
+
+          const expirationdate = new Date(
+            new Date().getTime() + 60 * 60 * 1000
+          );
+
           filteredUsers = userResults.users.filter(
             (user) => user.email === email
           );
@@ -50,10 +55,9 @@ const LoginPage = () => {
           localStorage.setItem("userId", currentUser.id);
           localStorage.setItem("token", token);
           localStorage.setItem("myPlaces", currentUser?.places.length);
+          localStorage.setItem("expirationdate", expirationdate.toISOString());
+          localStorage.setItem("isLoggedIn", "true");
         } catch (error) {}
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("isLoggedIn", "true");
         navigate("/allUsers");
         handleLoginSuccess(currentUser.id);
       } else {

@@ -5,8 +5,18 @@ const LoginContext = createContext();
 const LoginProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const expirationdate = localStorage.getItem("expirationdate");
+
+  const timer = new Date(expirationdate).getTime() - new Date().getTime();
+
+  setTimeout(() => {
+    alert("token expired please login again");
+    handleLogout();
+  }, timer);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     const loggedIn = !!token;
     setIsLoggedIn(loggedIn);
 
