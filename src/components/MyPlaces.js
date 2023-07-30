@@ -101,7 +101,7 @@ const MyPlaces = () => {
                       <CardContent>
                         <Typography variant="h6">
                           <img
-                            src={`http://localhost:5000/${place?.image}`}
+                            src={`${process.env.REACT_APP_URL_PATH}/${place?.image}`}
                             alt="place"
                           />
                         </Typography>

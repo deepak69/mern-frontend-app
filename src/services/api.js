@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000"; // Replace with your API URL
+const BASE_URL = process.env.REACT_APP_URL_PATH; // Replace with your API URL
+
+console.log(BASE_URL, "checking base");
 
 let token = localStorage.getItem("token");
 
