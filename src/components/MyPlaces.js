@@ -96,18 +96,19 @@ const MyPlaces = () => {
               {places &&
                 places.length > 0 &&
                 places.map((place) => (
-                  <Grid item xs={12} sm={6} md={6} key={place.id}>
+                  <Grid item xs={12} sm={4} md={4} key={place.id}>
                     <Card>
                       <CardContent>
                         <Typography variant="h6">
                           <img
                             src={`${process.env.REACT_APP_URL_PATH}/${place?.image}`}
+                            width="100%"
                             alt="place"
                           />
                         </Typography>
                         <Typography variant="h6">{place.title}</Typography>
                         <Typography variant="body1">
-                          Address: {place.description}
+                          <b>About:</b> {place.description}
                         </Typography>
                       </CardContent>
                       {isLoggedIn &&
@@ -134,7 +135,7 @@ const MyPlaces = () => {
                               startIcon={<MapIcon />}
                               onClick={() => viewLocationOnMaps(place.address)}
                             >
-                              View in Map
+                              Map
                             </Button>
                           </CardActions>
                         )}

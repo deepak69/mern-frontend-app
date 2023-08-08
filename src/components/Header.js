@@ -15,6 +15,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { LoginContext } from "../context/loginContext";
 import { useNavigate } from "react-router-dom";
 
+import logo192 from "../assets/images/logo192.png";
+
 const Header = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const Header = () => {
           sx={{ flexGrow: 1 }}
           onClick={() => navigate("/allUsers")}
         >
-          ExplorePoint
+          <img src={logo192} width="50px" style={{ marginTop: "5px" }} />
         </Typography>
         {isMobile ? (
           <>

@@ -83,6 +83,7 @@ const LoginPage = () => {
           flexDirection: "column",
           alignItems: "center",
           mt: 8,
+          marginTop: "30%",
         }}
       >
         <Typography variant="h4" align="center" gutterBottom>

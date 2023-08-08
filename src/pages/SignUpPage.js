@@ -61,6 +61,7 @@ const SignupPage = () => {
           flexDirection: "column",
           alignItems: "center",
           mt: 8,
+          marginTop: "20%",
         }}
       >
         <Typography variant="h4" align="center" gutterBottom>
